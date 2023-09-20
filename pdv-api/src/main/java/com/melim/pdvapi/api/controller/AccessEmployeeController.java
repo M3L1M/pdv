@@ -26,7 +26,7 @@ public class AccessEmployeeController {
 	private final AccessEmployeeService service;
 	private final EmployeeService employeeService;
 	
-	@PostMapping
+	@PostMapping("create-user")
 	public ResponseEntity<?> create(@RequestBody AccessEmployeeDTO dto){
 		
 		try {
@@ -42,20 +42,20 @@ public class AccessEmployeeController {
 		}
 	}
 	
+	@PostMapping
 	public ResponseEntity<?> authenticate(@RequestBody AccessEmployeeDTO dto){
 		String password=dto.getPassword();
 		String username=dto.getUsername();
 		
 		try {
 			AccessEmployee accessEmployee=service.authenticate(username, password);
-			return new ResponseEntity<AccessEmployee>(accessEmployee,HttpStatus.OK);
+			return new ResponseEntity<AccessEmployee>(accessEmployee,HttpStatus.ACCEPTED);
 		}catch (BusinessRuleException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());					
 		}
-		
-		
-		
 	}
+	
+	
 	
 	
 	

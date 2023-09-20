@@ -2,6 +2,7 @@ package com.melim.pdvapi.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -31,9 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService{
 	}
 
 	@Override
-	public void update(Integer id, Employee employee) {
-		// TODO Auto-generated method stub
-		
+	@Transactional
+	public void update( Employee employee) {
+		Objects.requireNonNull(employee.getId());
+		repository.save(employee);
 	}
 
 	@Override

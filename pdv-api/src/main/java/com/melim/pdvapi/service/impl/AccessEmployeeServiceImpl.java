@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.melim.pdvapi.exception.AuthenticationException;
 import com.melim.pdvapi.exception.ErrorValidate;
 import com.melim.pdvapi.model.entity.AccessEmployee;
+import com.melim.pdvapi.model.entity.enums.Status;
 import com.melim.pdvapi.modelrepository.AccessEmployeeRepository;
 import com.melim.pdvapi.service.AccessEmployeeService;
 
@@ -25,15 +26,22 @@ public class AccessEmployeeServiceImpl implements AccessEmployeeService {
 	@Transactional
 	public AccessEmployee authenticate(String username,String password) {
 		
-		boolean exists=repository.existsByUsername(username);
+		Optional<AccessEmployee> accessEmployee=repository.findByUsername(username);
 		
-		if(exists==false) {
+		if(!accessEmployee.isPresent()) {
 			throw new AuthenticationException("Usuario não encontrado na base de dados");
 		}
 		
+		if(!accessEmployee.get().getPassword().equals(password)) {
+			throw new AuthenticationException("Senha invalida");
+		}
+		
+		if(accessEmployee.get().getStatus().equals(Status.INACTIVE)) {
+			throw new AuthenticationException("Este usuario esta inativado, entre em contato com o suporte");
+		}
 		
 		
-		return null;
+		return accessEmployee.get();
 	}
 
 	@Override
